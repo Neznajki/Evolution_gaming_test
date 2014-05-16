@@ -10,6 +10,7 @@
 		<script type="text/coffeescript" src="coffee/LocalStorage.coffee"></script>
 		<script type="text/coffeescript" src="coffee/Tree.coffee"></script>
 		<script type="text/coffeescript" src="coffee/Saver.coffee"></script>
+		<script type="text/coffeescript" src="coffee/DataAsker.coffee"></script>
 		<script type="text/coffeescript" src="coffee/main.coffee"></script>
 		
 		<script type="text/javascript" src="JS/coffee-script.js"></script>
@@ -17,9 +18,21 @@
     </head>
     <body>
 		overal spent 8 hours <br/>
-		<button id="save">save</button>
-		<select id="saveSelector"> </select>
-		<button id="load">load</button>
-		<div id="container"></div>
+		<div id="mainContainer">
+			<button id="save">save</button>
+			<select id="saveSelector"> </select>
+			<button id="load">load</button><br/>
+			
+			<div id="saveInformation"></div>
+			
+			<div id="container"></div>
+		</div>
+		<div id="dataAsker" style="display: none;">
+			<div id="explain"></div>
+			<input id="askField" type="text" value=""/>
+			<button id="ok">confirm</button>
+			<button id="cancel">cancel</button>
+			<div id="error" style="display: none;"></div>
+		</div>
     </body>
 </html>

@@ -103,7 +103,6 @@ class window.Tree
 					refreshID += '_' + newElementID;
 				self.drawChild refreshID, newEntry, container;
 			
-			
 	getEntry: (entryName = false) ->
 		result = @treeObject;
 		#entryName += '';

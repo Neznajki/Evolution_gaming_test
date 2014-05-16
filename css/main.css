@@ -1,8 +1,32 @@
 body {
 	padding-left: 30px;
+	vertical-align: top;
 }
 
+button {
+	cursor: pointer;
+}
+
+#saveInformation {
+	display: inline-block;
+}
+
+#mainContainer {
+	display: inline-block;
+}
+#dataAsker {
+	display: inline-block;
+	vertical-align: top;
+}
+#dataAsker * {
+	vertical-align: top;
+}
+#dataAsker #error {
+	color: red;
+}
+	
 .container {
+	vertical-align: top;
 	display: inline-block;
 }
 
@@ -40,4 +64,14 @@ body {
 	background-size: 100% auto;
 	margin-left: 10px;
 	display: inline-block;
+	cursor: pointer;
+}
+.del {
+	background-image: url('../images/remove.jpg');
+	width: 12px;
+	height: 12px;
+	background-size: 100% auto;
+	margin-left: 10px;
+	display: inline-block;
+	cursor: pointer;
 }

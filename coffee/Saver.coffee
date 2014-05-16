@@ -4,38 +4,47 @@ class window.Saver
 	save: (event) ->
 		self = event.data;
 		if empty self.saveName
-			saveName = prompt "Please type in save name:";
+			new window.DataAsker "Please type in save name:", true, self, self.saveNameRecived;
 		else
-			saveName = self.saveName;
-		LS = new window.LS self.sessionsContainer;
-		existingSaves = LS.load();
+			self.saveCurrentState(self.saveName, self);
 
-		if empty saveName
-			noSave = true;
-		else if existingSaves[saveName] is true and empty self.saveName
-			agreement = prompt "save already exists if you would like override old one push Ok";
-			if agreement is null
-				noSave = true;
+	saveNameRecived: (saveName, self) ->
+		#log this;
+		self.LS = new window.LS self.sessionsContainer;
+		self.existingSaves = self.LS.load();
 
-		if empty saveName
-			noSave = true;
+		if self.existingSaves[saveName] is true
+			#alert(1);
+			new window.DataAsker "save already exists if you would like override old one push confirm", false, self, self.saveCurrentState;
+		else
+			#alert(2);
+			self.saveCurrentState(saveName,self);	
 
-		if empty noSave
-			self.LS = new window.LS saveName;
-			existingSaves[saveName] = true;
-			LS.save existingSaves;
-			self.LS.save Tree.getTree();
-			self.generateSelect();
-			self.saveName = saveName;
-			log self.saveName
+	saveCurrentState: (saveName, self) ->
+		if typeof self.LS is 'object'
+			self.existingSaves[saveName] = true;
+			self.LS.save self.existingSaves;
+			delete self.existingSaves;
+			delete self.LS;
+		
+		LS = new window.LS saveName;
+		LS.save Tree.getTree();
 
+		self.generateSelect();
+		self.saveName = saveName;
+
+		$('#saveInformation').html 'data saved to save ' + saveName;
+		clearFunction = -> $('#saveInformation').html '';
+		setTimeout clearFunction, 1000;
+		
+		#log self.saveName;
 
 	load: () ->
 		selectedSave = $('#saveSelector').val();
 		if not empty selectedSave
 			LS = new window.LS selectedSave
 			Tree.setTree LS.load();
-			log Tree;
+			#log Tree;
 			Tree.draw();
 
 	generateSelect: () ->

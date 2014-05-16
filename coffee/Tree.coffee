@@ -12,15 +12,16 @@ class window.Tree
 	
 	draw: (where = false) ->
 		childs = @getEntry where;
+		#log childs;
 		if where is false #main container checking
 			container = $(@mainContainer);
 			addButton = $ '<div/>', {class: 'add'};
 			addButton.click this, @add;
 			container.append addButton;
 			container.append $ '<br/>'
-			log(1);
+			#log(1);
 		else #is child container of other container
-			container = $('#' + where).next().next();
+			container = @getChildsContainer(where);
 			container.removeClass 'hidden';
 			#log(2);
 			
@@ -33,7 +34,7 @@ class window.Tree
 			
 	
 	drawChild: (ID,data,container) ->
-		log container;
+		#log container;
 		name = data.name;
 		childs = data.childs;
 		branch = $ '<div/>', {ID: ID, text: name, class: 'container'};
@@ -50,8 +51,12 @@ class window.Tree
 		addButton = $ '<div/>', {ID: 'add_' + ID,class: 'add'};
 		addButton.click this, @add;
 
+		removeButton = $ '<div/>', {ID: 'del_' + ID,class: 'del'};
+		removeButton.click this, @remove;
+
 		container.append branch;
 		container.append addButton;
+		container.append removeButton;
 		container.append childsContainer;
 
 	expand: (event) ->
@@ -61,26 +66,28 @@ class window.Tree
 		elementID = element.attr 'ID';
 		if expandButton.hasClass 'expanded'
 			expandButton.removeClass 'expanded';
-			element.next().next().html '';
+			self.getChildsContainer(elementID).html '';
 		else
 			self.draw elementID;
 			expandButton.addClass 'expanded';
 	
 	add: (event) ->
 		self = event.data;
-		newName = prompt "Please type in name:" ;
-		if not empty newName
-			if empty $(this).attr 'ID'
+		#newName = prompt "Please type in name:" ;
+		elementID = $(this).attr 'ID';
+
+		new window.DataAsker "Please type in name:", true, self, (newName)->
+		#if not empty newName
+			if empty elementID
 				target = self.getEntry();
 				refreshID = false;
 				container = $(self.mainContainer);
-				log container;
+				#log container;
 				#log 1;
 			else
-				elementID = $(this).attr 'ID';
 				refreshID = elementID.replace /^add_/, '';
-				container = $('#childs_' + refreshID);
-				log refreshID + ' indexing';
+				container = self.getChildsContainer(refreshID);
+				#log refreshID + ' indexing';
 				target = self.getEntry refreshID;
 				#log 2;
 			
@@ -90,7 +97,7 @@ class window.Tree
 			#log newElementID;
 			target.push newEntry;
 			
-			expandButton = $(this).prev().prev();
+			expandButton = self.getExpandButton(refreshID);
 			if expandButton.hasClass 'noChilds'
 				expandButton.removeClass 'noChilds';
 				expandButton.addClass 'withChilds';
@@ -103,18 +110,55 @@ class window.Tree
 					refreshID += '_' + newElementID;
 				self.drawChild refreshID, newEntry, container;
 			
-			
+	remove: (event) ->
+		self = event.data; #getting class from registered param
+
+		elementID = $(this).attr 'ID';
+		removeID = elementID.replace /^del_/, '';
+		
+		#log removeID + ' indexing remove';
+		
+		matches = removeID.match(/(.*)_?([0-9]+$)/);
+		#log matches;
+		
+		parentID = matches[1].replace(/_$/,'');
+		elementArrayID = parseInt(matches[2]);
+
+		target = self.getEntry parentID or false;
+		
+		target.splice(elementArrayID,1);
+		#log self.treeObject;
+		#log parentID;
+		if empty target
+			self.getExpandButton(parentID).removeClass('expanded').removeClass('withChilds').addClass('noChilds').off('click');
+		
+		self.getChildsContainer(parentID).html '';
+		self.draw(parentID or false);
+		#log 2;
+
 	getEntry: (entryName = false) ->
 		result = @treeObject;
 		#entryName += '';
 		#log entryName;
 		if entryName isnt false
-			log 'comes in get sub entry';
+			#log 'comes in get sub entry';
 			sections = entryName.split('_');
+			#log sections;
 			for depth,section of sections
 				result = result[section]['childs'];
 				
 		return result;
 		
+	getChildsContainer: (elementID) ->
+		if empty elementID
+			elementID = @mainContainer
+		else
+			elementID = '#childs_' + elementID
+
+		return $(elementID);
+	
+	getExpandButton: (elementID)->
+		return $('#' + elementID).prev();
+
 	createNewEntry: (entryName)->
 		return {name: entryName, childs: []};
