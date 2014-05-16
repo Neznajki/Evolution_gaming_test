@@ -6,7 +6,7 @@ body {
 button {
 	cursor: pointer;
 	font-weight: bold;
-	border-radius:25px;
+	border-radius: 0px;
 }
 
 #saveInformation {
