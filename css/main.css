@@ -42,7 +42,7 @@ button {
 	height: 20px;
 	display: inline-block;
 	background-size: 100% auto;
-	margin-right: 3px;
+	margin-right: 10px;
 	margin-left: 10px;	
 }
 .withChilds {
@@ -51,7 +51,7 @@ button {
 	height: 20px;
 	display: inline-block;
 	background-size: 100% auto;
-	margin-right: 3px;
+	margin-right: 10px;
 	margin-left: 10px;
 	cursor: pointer;
 }
